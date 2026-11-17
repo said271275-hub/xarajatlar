@@ -1,7 +1,7 @@
 export const formatMoney = (n) =>
   new Intl.NumberFormat('ru-RU').format(Math.round(n)).replace(/ /g, ' ') + " so'm"
 
-const MONTHS = [
+export const MONTHS = [
   'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
   'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr',
 ]

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../utils/categories'
 import { todayStr } from '../utils/format'
+import Select from './Select'
+import DatePicker from './DatePicker'
 
 export default function TransactionForm({ onAdd }) {
   const [type, setType] = useState('expense')
@@ -82,22 +84,21 @@ export default function TransactionForm({ onAdd }) {
         />
       </label>
 
-      <label className="block text-sm">
+      <div className="text-sm">
         <span className="mb-1 block font-medium text-slate-600">Toifa</span>
-        <select value={category} onChange={(e) => setCategory(e.target.value)} className={field}>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.icon} {c.name}
-            </option>
-          ))}
-        </select>
-      </label>
+        <Select
+          label="Toifa"
+          value={category}
+          onChange={setCategory}
+          options={categories.map((c) => ({ value: c.id, label: `${c.icon} ${c.name}` }))}
+        />
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block text-sm">
+        <div className="text-sm">
           <span className="mb-1 block font-medium text-slate-600">Sana</span>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={field} />
-        </label>
+          <DatePicker label="Sana" value={date} onChange={setDate} />
+        </div>
         <label className="block text-sm">
           <span className="mb-1 block font-medium text-slate-600">Izoh</span>
           <input
