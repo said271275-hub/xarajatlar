@@ -31,7 +31,7 @@ export default function CategoryChart({ expenses }) {
       ) : (
         <div className="flex flex-col items-center gap-6 sm:flex-row">
           <svg viewBox="0 0 200 200" className="neu-sm h-44 w-44 shrink-0 -rotate-90 rounded-full p-2" role="img" aria-label="Doira diagramma">
-            <circle cx="100" cy="100" r={R} fill="none" stroke="#d3dae5" strokeWidth="28" />
+            <circle cx="100" cy="100" r={R} fill="none" strokeWidth="28" style={{ stroke: 'var(--neu-track)' }} />
             {slices.map((s) => (
               <circle
                 key={s.id}

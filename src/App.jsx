@@ -6,6 +6,7 @@ import TransactionList from './components/TransactionList'
 import CategoryChart from './components/CategoryChart'
 import { monthKey, monthLabel, todayStr } from './utils/format'
 import Select from './components/Select'
+import ThemeToggle from './components/ThemeToggle'
 
 export default function App() {
   const [transactions, setTransactions] = useLocalStorage('xarajatlar:v1', [])
@@ -42,14 +43,17 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight text-slate-800">Xarajatlar hisobi</h1>
           <p className="mt-1 text-sm text-slate-500">Daromad va xarajatlaringizni bir joyda nazorat qiling</p>
         </div>
-        <Select
-          label="Oy"
-          variant="raised"
-          align="right"
-          value={month}
-          onChange={setMonth}
-          options={months.map((m) => ({ value: m, label: monthLabel(m) }))}
-        />
+        <div className="flex flex-wrap items-center gap-5">
+          <ThemeToggle />
+          <Select
+            label="Oy"
+            variant="raised"
+            align="right"
+            value={month}
+            onChange={setMonth}
+            options={months.map((m) => ({ value: m, label: monthLabel(m) }))}
+          />
+        </div>
       </header>
 
       <Summary income={sum(monthItems.filter((t) => t.type === 'income'))} expense={sum(expenses)} />

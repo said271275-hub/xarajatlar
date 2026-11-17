@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { MONTHS, formatDay, todayStr } from '../utils/format'
+import { MONTHS, todayStr } from '../utils/format'
 
 const WEEKDAYS = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya']
 const pad = (n) => String(n).padStart(2, '0')
@@ -61,7 +61,7 @@ export default function DatePicker({ value, onChange, label }) {
         onClick={() => (open ? setOpen(false) : openPicker())}
         className="neu-inset flex w-full items-center justify-between gap-2 rounded-xl px-4 py-3 text-left text-sm text-slate-700 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
       >
-        <span className="truncate">{formatDay(value)}</span>
+        <span className="truncate">{value.split('-').reverse().join('.')}</span>
         <span aria-hidden>📅</span>
       </button>
 
@@ -113,7 +113,7 @@ export default function DatePicker({ value, onChange, label }) {
                   className={`h-9 rounded-full text-sm transition ${
                     isSel
                       ? 'neu-inset font-bold text-emerald-700'
-                      : 'text-slate-700 hover:bg-white/60'
+                      : 'text-slate-700 hover:bg-slate-400/20'
                   } ${isToday && !isSel ? 'font-bold text-emerald-600' : ''}`}
                 >
                   {d}
