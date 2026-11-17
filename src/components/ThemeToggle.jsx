@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
 const STORAGE_KEY = 'xarajatlar:theme'
-const FALL_MS = 1000
-const RISE_MS = 1100
+const FALL_MS = 1800
+const RISE_MS = 2000
 
 const prefersReducedMotion = () =>
   typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -27,6 +27,7 @@ function Moon() {
 export default function ThemeToggle() {
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
   const [phase, setPhase] = useState('idle') // idle | falling | rising
+  const [pulse, setPulse] = useState(false)
   const timers = useRef([])
 
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
@@ -53,8 +54,12 @@ export default function ThemeToggle() {
     root.classList.add('theme-transition')
     const total = next === 'dark' ? FALL_MS : RISE_MS
     setPhase(next === 'dark' ? 'falling' : 'rising')
-    // Bola teshikka tushayotganda (yoki chiqayotganda) kun/tun almashadi
-    later(() => applyTheme(next), next === 'dark' ? 560 : 420)
+    // Bola teshikka tushayotganda tun, teshikdan chiqayotganda kun bo'ladi
+    later(() => applyTheme(next), next === 'dark' ? 1250 : 450)
+    // Quyoshdan chiqqanda / quyoshga kirganda tugma "puflab" qo'yadi
+    const pulseAt = next === 'dark' ? 150 : Math.round(total * 0.84)
+    later(() => setPulse(true), pulseAt)
+    later(() => setPulse(false), pulseAt + 450)
     later(() => {
       setPhase('idle')
       root.classList.remove('theme-transition')
@@ -72,22 +77,22 @@ export default function ThemeToggle() {
         aria-checked={isDark}
         aria-label={isDark ? 'Kunduzgi rejimga o‘tish' : 'Tungi rejimga o‘tish'}
         onClick={toggle}
-        className="neu-btn absolute left-3.5 top-1/2 flex h-[52px] w-[52px] -translate-y-1/2 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+        className={`neu-btn absolute left-3.5 top-1/2 flex h-[52px] w-[52px] -translate-y-1/2 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${pulse ? 'sun-pulse' : ''}`}
       >
         <span key={theme} className={`theme-icon ${isDark ? 'text-sky-400' : 'text-amber-500'}`}>
           {isDark ? <Moon /> : <Sun />}
         </span>
       </button>
 
-      <svg viewBox="0 0 120 76" className="absolute right-2 top-0 h-[76px] w-[120px]" aria-hidden="true">
+      <svg viewBox="0 0 212 76" className="pointer-events-none absolute left-0 top-0 h-[76px] w-[212px]" aria-hidden="true">
         <defs>
           <clipPath id="stage-clip">
-            <rect x="0" y="0" width="120" height="63" />
+            <rect x="0" y="0" width="212" height="63" />
           </clipPath>
         </defs>
 
         {/* teshik */}
-        <ellipse cx="88" cy="62" rx="17" ry="5" className="hole" />
+        <ellipse cx="172" cy="62" rx="17" ry="5" className="hole" />
 
         {/* tayoqcha bola */}
         <g clipPath="url(#stage-clip)">
