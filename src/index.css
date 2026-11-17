@@ -4,6 +4,42 @@
   --font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
 }
 
+:root {
+  --neu-bg: #e0e5ec;
+  --neu-light: #ffffff;
+  --neu-dark: #a3b1c6;
+}
+
 body {
-  @apply bg-slate-50 text-slate-800 antialiased;
+  background: var(--neu-bg);
+  @apply text-slate-700 antialiased;
+}
+
+/* Neumorphism: ko'tarilgan (raised) element */
+.neu {
+  background: var(--neu-bg);
+  border-radius: 1.5rem;
+  box-shadow: 9px 9px 18px var(--neu-dark), -9px -9px 18px var(--neu-light);
+}
+.neu-sm {
+  background: var(--neu-bg);
+  box-shadow: 5px 5px 10px var(--neu-dark), -5px -5px 10px var(--neu-light);
+}
+/* Bosilgan (inset) element: input, tab konteyner */
+.neu-inset {
+  background: var(--neu-bg);
+  box-shadow: inset 5px 5px 10px var(--neu-dark), inset -5px -5px 10px var(--neu-light);
+}
+/* Tugma: ko'tarilgan, bosilganda ichiga botadi */
+.neu-btn {
+  background: var(--neu-bg);
+  box-shadow: 6px 6px 12px var(--neu-dark), -6px -6px 12px var(--neu-light);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.neu-btn:hover {
+  box-shadow: 4px 4px 8px var(--neu-dark), -4px -4px 8px var(--neu-light);
+}
+.neu-btn:active {
+  box-shadow: inset 4px 4px 8px var(--neu-dark), inset -4px -4px 8px var(--neu-light);
+  transform: scale(0.99);
 }

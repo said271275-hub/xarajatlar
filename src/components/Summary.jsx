@@ -2,15 +2,15 @@ import { formatMoney } from '../utils/format'
 
 function Card({ label, value, tone, icon }) {
   const tones = {
-    income: 'text-emerald-600 bg-emerald-50 ring-emerald-100',
-    expense: 'text-rose-600 bg-rose-50 ring-rose-100',
-    balance: 'text-slate-900 bg-white ring-slate-200',
+    income: 'text-emerald-600',
+    expense: 'text-rose-600',
+    balance: 'text-slate-800',
   }
   return (
-    <div className={`rounded-2xl p-5 ring-1 ${tones[tone]}`}>
+    <div className={`neu p-6 ${tones[tone]}`}>
       <div className="flex items-center justify-between text-sm font-medium opacity-80">
         <span>{label}</span>
-        <span aria-hidden>{icon}</span>
+        <span aria-hidden className="neu-inset flex h-9 w-9 items-center justify-center rounded-full text-base">{icon}</span>
       </div>
       <p className="mt-2 text-2xl font-bold tracking-tight tabular-nums">{value}</p>
     </div>

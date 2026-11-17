@@ -9,7 +9,7 @@ Daromad va xarajatlarni kuzatish uchun React + Tailwind CSS ilovasi.
 - Xarajatlar toifalar bo'yicha doira diagramma (SVG, kutubxonasiz)
 - Kunlar bo'yicha guruhlangan yozuvlar ro'yxati, o'chirish
 - Ma'lumotlar `localStorage` da saqlanadi
-- Telefon va kompyuter uchun moslashuvchan dizayn
+- Neumorphism (soft UI) dizayni, telefon va kompyuter uchun moslashuvchan
 
 ## Texnologiyalar
 React 18, Vite, Tailwind CSS v4

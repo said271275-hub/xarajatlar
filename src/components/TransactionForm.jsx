@@ -41,13 +41,13 @@ export default function TransactionForm({ onAdd }) {
   }
 
   const field =
-    'w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'
+    'neu-inset w-full rounded-xl px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-500/40'
 
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-2xl bg-white p-5 ring-1 ring-slate-200">
+    <form onSubmit={submit} className="neu space-y-5 p-6">
       <h2 className="text-base font-semibold">Yangi yozuv</h2>
 
-      <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist">
+      <div className="neu-inset grid grid-cols-2 gap-2 rounded-xl p-1.5" role="tablist">
         {[
           ['expense', 'Xarajat'],
           ['income', 'Daromad'],
@@ -61,8 +61,8 @@ export default function TransactionForm({ onAdd }) {
             className={`rounded-lg py-2 text-sm font-medium transition ${
               type === t
                 ? t === 'expense'
-                  ? 'bg-white text-rose-600 shadow-sm'
-                  : 'bg-white text-emerald-600 shadow-sm'
+                  ? 'neu-sm text-rose-600'
+                  : 'neu-sm text-emerald-600'
                 : 'text-slate-500 hover:text-slate-700'
             }`}
           >
@@ -114,7 +114,7 @@ export default function TransactionForm({ onAdd }) {
 
       <button
         type="submit"
-        className="w-full rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-[.99]"
+        className="neu-btn w-full rounded-xl py-3 text-sm font-semibold text-emerald-700"
       >
         Qo'shish
       </button>

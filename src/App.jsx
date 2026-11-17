@@ -33,7 +33,7 @@ export default function App() {
     <div className="mx-auto max-w-5xl px-4 py-8 sm:py-12">
       <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Xarajatlar hisobi</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-800">Xarajatlar hisobi</h1>
           <p className="mt-1 text-sm text-slate-500">Daromad va xarajatlaringizni bir joyda nazorat qiling</p>
         </div>
         <label className="text-sm">
@@ -41,7 +41,7 @@ export default function App() {
           <select
             value={month}
             onChange={(e) => setMonth(e.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+            className="neu-btn rounded-xl px-4 py-3 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/40"
           >
             {months.map((m) => (
               <option key={m} value={m}>
@@ -64,7 +64,7 @@ export default function App() {
         </div>
       </div>
 
-      <footer className="mt-10 text-center text-xs text-slate-400">
+      <footer className="mt-10 text-center text-xs text-slate-500">
         Ma'lumotlar faqat shu brauzerda (localStorage) saqlanadi.
       </footer>
     </div>

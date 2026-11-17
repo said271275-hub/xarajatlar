@@ -23,15 +23,15 @@ export default function CategoryChart({ expenses }) {
   }, [expenses])
 
   return (
-    <section className="rounded-2xl bg-white p-5 ring-1 ring-slate-200">
+    <section className="neu p-6">
       <h2 className="mb-4 text-base font-semibold">Xarajatlar toifalar bo'yicha</h2>
 
       {total === 0 ? (
-        <p className="py-8 text-center text-sm text-slate-400">Bu oyda xarajat yo'q</p>
+        <p className="py-8 text-center text-sm text-slate-500">Bu oyda xarajat yo'q</p>
       ) : (
         <div className="flex flex-col items-center gap-6 sm:flex-row">
-          <svg viewBox="0 0 200 200" className="h-44 w-44 shrink-0 -rotate-90" role="img" aria-label="Doira diagramma">
-            <circle cx="100" cy="100" r={R} fill="none" stroke="#f1f5f9" strokeWidth="28" />
+          <svg viewBox="0 0 200 200" className="neu-sm h-44 w-44 shrink-0 -rotate-90 rounded-full p-2" role="img" aria-label="Doira diagramma">
+            <circle cx="100" cy="100" r={R} fill="none" stroke="#d3dae5" strokeWidth="28" />
             {slices.map((s) => (
               <circle
                 key={s.id}
