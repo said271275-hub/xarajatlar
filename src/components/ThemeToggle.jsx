@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
 const STORAGE_KEY = 'xarajatlar:theme'
-const LEAVE_MS = 2300 // tun: bola shoxga osilib, chiqib ketadi
-const ARRIVE_MS = 2300 // kun: bola shox bo'ylab kelib, yerga sakraydi
+const LEAVE_MS = 2700 // tun: quyoshdan chiqadi -> doira tagiga boradi -> shoxga ilinib doiraga chiqib ketadi
+const ARRIVE_MS = 2700 // kun: doiradan shox orqali tushadi -> quyosh oldiga boradi -> yo'q bo'ladi
 
 const prefersReducedMotion = () =>
   typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -54,12 +54,12 @@ export default function ThemeToggle() {
     root.classList.add('theme-transition')
     const total = next === 'dark' ? LEAVE_MS : ARRIVE_MS
     setPhase(next === 'dark' ? 'leaving' : 'arriving')
-    // Bola shoxdan chiqib ketayotganda tun, shoxdan tushib kelayotganda kun bo'ladi
-    const switchAt = next === 'dark' ? 1100 : 400
-    later(() => applyTheme(next), switchAt)
-    // Mavzu almashganda tugma "puflab" qo'yadi
-    later(() => setPulse(true), switchAt)
-    later(() => setPulse(false), switchAt + 450)
+    // Bola doiraga chiqib ketayotganda tun, doiradan tushib kelayotganda kun bo'ladi
+    later(() => applyTheme(next), next === 'dark' ? 1700 : 400)
+    // Bola quyoshdan chiqqanda / quyoshga kirganda tugma "puflab" qo'yadi
+    const pulseAt = next === 'dark' ? 150 : 2250
+    later(() => setPulse(true), pulseAt)
+    later(() => setPulse(false), pulseAt + 450)
     later(() => {
       setPhase('idle')
       root.classList.remove('theme-transition')
@@ -85,35 +85,44 @@ export default function ThemeToggle() {
       </button>
 
       <svg viewBox="0 0 212 76" className="pointer-events-none absolute left-0 top-0 h-[76px] w-[212px]" aria-hidden="true">
-        {/* daraxt shoxi (tepadan o'ngdan chiqib turadi) */}
-        <path d="M 232 10 C 192 8, 150 8, 106 12" className="branch" />
-        <path d="M 140 9 C 134 14, 130 18, 126 20" className="branch branch-twig" />
+        <defs>
+          {/* doira ichiga kirgan qism ko'rinmaydi */}
+          <clipPath id="stage-clip">
+            <rect x="0" y="7" width="212" height="69" />
+          </clipPath>
+        </defs>
+
+        {/* tepadagi qora doira */}
+        <ellipse cx="150" cy="7" rx="14" ry="4.6" className="hole" />
+
+        {/* doiradan osilib turgan shoxcha */}
+        <path d="M 150 9 C 148 14, 152 19, 150 26" className="twig" />
         <g className="leaf">
-          <ellipse cx="112" cy="9" rx="5" ry="2.6" transform="rotate(-25 112 9)" />
-          <ellipse cx="104" cy="14" rx="5" ry="2.6" transform="rotate(20 104 14)" />
-          <ellipse cx="124" cy="20" rx="4.5" ry="2.4" transform="rotate(35 124 20)" />
-          <ellipse cx="119" cy="12" rx="4.5" ry="2.4" transform="rotate(-40 119 12)" />
-          <ellipse cx="150" cy="5" rx="4.5" ry="2.4" transform="rotate(-15 150 5)" />
+          <ellipse cx="155" cy="15" rx="4" ry="2" transform="rotate(-35 155 15)" />
+          <ellipse cx="145" cy="19" rx="4" ry="2" transform="rotate(35 145 19)" />
+          <ellipse cx="154" cy="23" rx="3.4" ry="1.8" transform="rotate(-30 154 23)" />
         </g>
 
         {/* tayoqcha bola */}
-        <g className={`stick ${stickClass}`}>
-          <g className="stick-body">
-            <circle cx="0" cy="-30" r="5" className="stick-fill" />
-            <line x1="0" y1="-25" x2="0" y2="-12" className="stick-line" />
-            {/* qo'llar pastda (tik turganda) */}
-            <g transform="translate(0 -22)" className="arms-down">
-              <line x1="0" y1="0" x2="-4" y2="9" className="stick-line" />
-              <line x1="0" y1="0" x2="4" y2="9" className="stick-line" />
-            </g>
-            {/* qo'llar tepada (shoxni ushlab turganda) */}
-            <g transform="translate(0 -23)" className="arms-up">
-              <line x1="-1" y1="0" x2="-5" y2="-17" className="stick-line" />
-              <line x1="1" y1="0" x2="5" y2="-17" className="stick-line" />
-            </g>
-            <g transform="translate(0 -12)">
-              <line x1="0" y1="0" x2="0" y2="12" className="stick-line leg leg-a" />
-              <line x1="0" y1="0" x2="0" y2="12" className="stick-line leg leg-b" />
+        <g clipPath="url(#stage-clip)">
+          <g className={`stick ${stickClass}`}>
+            <g className="stick-body">
+              <circle cx="0" cy="-30" r="5" className="stick-fill" />
+              <line x1="0" y1="-25" x2="0" y2="-12" className="stick-line" />
+              {/* qo'llar pastda (yurganda) */}
+              <g transform="translate(0 -22)" className="arms-down">
+                <line x1="0" y1="0" x2="-4" y2="9" className="stick-line arm arm-a" />
+                <line x1="0" y1="0" x2="4" y2="9" className="stick-line arm arm-b" />
+              </g>
+              {/* qo'llar tepada (shoxchani ushlab turganda) */}
+              <g transform="translate(0 -23)" className="arms-up">
+                <line x1="-1" y1="0" x2="-3.5" y2="-18" className="stick-line" />
+                <line x1="1" y1="0" x2="3.5" y2="-18" className="stick-line" />
+              </g>
+              <g transform="translate(0 -12)">
+                <line x1="0" y1="0" x2="0" y2="12" className="stick-line leg leg-a" />
+                <line x1="0" y1="0" x2="0" y2="12" className="stick-line leg leg-b" />
+              </g>
             </g>
           </g>
         </g>
