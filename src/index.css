@@ -64,14 +64,14 @@ body {
 
 :root {
   --neu-track: #d3dae5;
-  --hole-fill: #c6cedb;
-  --hole-rim: #aab5c6;
   --stick: #2f3542;
+  --branch: #8a6d4d;
+  --leaf: #6fae6a;
 }
 :root[data-theme='dark'] {
-  --hole-fill: #14161a;
-  --hole-rim: #3a404a;
   --stick: #e9eef6;
+  --branch: #6b5844;
+  --leaf: #3e7a52;
 }
 
 /* kun/tun almashganda ranglar yumshoq o'tadi */
@@ -88,11 +88,18 @@ html.theme-transition *::after {
     fill 0.7s ease !important;
 }
 
-/* ---------- Tema tugmasi: bola, teshik va quyosh ---------- */
-.hole {
-  fill: var(--hole-fill);
-  stroke: var(--hole-rim);
-  stroke-width: 1.2;
+/* ---------- Tema tugmasi: bola va daraxt shoxi ---------- */
+.branch {
+  fill: none;
+  stroke: var(--branch);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.branch-twig {
+  stroke-width: 2.2;
+}
+.leaf ellipse {
+  fill: var(--leaf);
 }
 .stick-line {
   stroke: var(--stick);
@@ -103,70 +110,84 @@ html.theme-transition *::after {
 .stick-fill {
   fill: var(--stick);
 }
+.arms-up { opacity: 0; }
+.arms-down { opacity: 1; }
 
-/* Dam olish holati: kunduz — bola quyosh ichida (ko'rinmaydi), tun — teshik ichida */
+/* Dam olish holati: kunduz — bola yerda turadi, tun — shoxdan chiqib ketgan */
 .stick.is-light {
-  transform: translate(70px, 60px);
-  opacity: 0;
+  transform: translate(150px, 62px);
 }
 .stick.is-dark {
-  transform: translate(172px, 104px);
+  transform: translate(222px, 48px);
+  opacity: 0;
 }
 
-/* Tunga o'tish: quyoshdan chiqadi -> teshikka yuradi -> tushadi */
-.stick.falling {
-  animation: stick-fall 1.8s linear forwards;
+/* Tunga o'tish: yerdan shoxga sakraydi -> shox bo'ylab osilib o'ngga ketadi */
+.stick.leaving {
+  animation: stick-leave 2.3s linear forwards;
 }
-.stick.falling .stick-body {
-  animation: body-fall 1.8s linear forwards;
+.stick.leaving .arms-down { animation: arms-down-leave 2.3s linear forwards; }
+.stick.leaving .arms-up   { animation: arms-up-leave 2.3s linear forwards; }
+.stick.leaving .stick-body { animation: bob 0.375s ease-in-out 0.5s 4; }
+.stick.leaving .leg-a { animation: dangle 0.375s ease-in-out 0.5s 4; }
+.stick.leaving .leg-b { animation: dangle 0.375s ease-in-out 0.5s 4 reverse; }
+
+/* Kunga o'tish: o'ngdan shoxga osilib keladi -> qo'yib yuboradi -> yerga tushadi */
+.stick.arriving {
+  animation: stick-arrive 2.3s linear forwards;
 }
-/* Kunga o'tish: teshikdan chiqadi -> quyoshga yuradi -> yo'q bo'ladi */
-.stick.rising {
-  animation: stick-rise 2s linear forwards;
+.stick.arriving .arms-down { animation: arms-down-arrive 2.3s linear forwards; }
+.stick.arriving .arms-up   { animation: arms-up-arrive 2.3s linear forwards; }
+.stick.arriving .stick-body { animation: bob 0.375s ease-in-out 4; }
+.stick.arriving .leg-a { animation: dangle 0.375s ease-in-out 4; }
+.stick.arriving .leg-b { animation: dangle 0.375s ease-in-out 4 reverse; }
+
+@keyframes dangle {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(9deg); }
+  75%  { transform: rotate(-9deg); }
+  100% { transform: rotate(0deg); }
 }
-.stick.rising .stick-body {
-  animation: body-rise 2s linear forwards;
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(1.4px); }
 }
 
-.stick.falling .leg-a, .stick.rising .leg-a { animation: swing 0.32s ease-in-out infinite alternate; }
-.stick.falling .leg-b, .stick.rising .leg-b { animation: swing 0.32s ease-in-out infinite alternate-reverse; }
-.stick.falling .arm-a, .stick.rising .arm-a { animation: swing 0.32s ease-in-out infinite alternate-reverse; }
-.stick.falling .arm-b, .stick.rising .arm-b { animation: swing 0.32s ease-in-out infinite alternate; }
-
-@keyframes swing {
-  from { transform: rotate(-28deg); }
-  to   { transform: rotate(28deg); }
+@keyframes stick-leave {
+  0%   { transform: translate(150px, 62px); animation-timing-function: linear; }
+  8%   { transform: translate(150px, 62px); animation-timing-function: ease-out; }
+  22%  { transform: translate(150px, 48px); animation-timing-function: linear; }
+  88%  { transform: translate(222px, 48px); }
+  100% { transform: translate(222px, 48px); }
+}
+@keyframes arms-up-leave {
+  0%, 8% { opacity: 0; }
+  9%, 100% { opacity: 1; }
+}
+@keyframes arms-down-leave {
+  0%, 8% { opacity: 1; }
+  9%, 100% { opacity: 0; }
 }
 
-@keyframes stick-fall {
-  0%   { transform: translate(70px, 60px); animation-timing-function: ease-in-out; }
-  12%  { transform: translate(70px, 60px); animation-timing-function: ease-in-out; }
-  62%  { transform: translate(168px, 60px); animation-timing-function: ease-in; }
-  70%  { transform: translate(172px, 62px); animation-timing-function: ease-in; }
-  100% { transform: translate(172px, 104px); }
+@keyframes stick-arrive {
+  0%   { transform: translate(222px, 48px); animation-timing-function: linear; }
+  62%  { transform: translate(150px, 48px); animation-timing-function: linear; }
+  66%  { transform: translate(150px, 48px); animation-timing-function: ease-in; }
+  74%  { transform: translate(150px, 62px); animation-timing-function: ease-out; }
+  79%  { transform: translate(150px, 59px); animation-timing-function: ease-in; }
+  84%  { transform: translate(150px, 62px); }
+  100% { transform: translate(150px, 62px); }
 }
-@keyframes body-fall {
-  0%   { transform: translate(0, -15px) scale(0.1) translate(0, 15px); opacity: 0; }
-  12%  { transform: translate(0, -15px) scale(1) translate(0, 15px); opacity: 1; }
-  62%  { transform: rotate(0deg); opacity: 1; }
-  100% { transform: rotate(-24deg); opacity: 1; }
+@keyframes arms-up-arrive {
+  0%, 65% { opacity: 1; }
+  66%, 100% { opacity: 0; }
 }
-
-@keyframes stick-rise {
-  0%   { transform: translate(172px, 104px); animation-timing-function: ease-out; }
-  22%  { transform: translate(172px, 62px); animation-timing-function: ease-in-out; }
-  32%  { transform: translate(172px, 60px); animation-timing-function: ease-in-out; }
-  84%  { transform: translate(70px, 60px); }
-  100% { transform: translate(70px, 60px); }
-}
-@keyframes body-rise {
-  0%   { transform: rotate(18deg); opacity: 1; }
-  32%  { transform: rotate(0deg); opacity: 1; }
-  84%  { transform: rotate(0deg); opacity: 1; }
-  100% { transform: translate(0, -15px) scale(0.05) translate(0, 15px); opacity: 0; }
+@keyframes arms-down-arrive {
+  0%, 65% { opacity: 0; }
+  66%, 100% { opacity: 1; }
 }
 
-/* bola quyoshga kirganda / chiqqanda tugma "puflab" qo'yadi */
+/* kun/tun almashganda tugma "puflab" qo'yadi */
 .sun-pulse {
   animation: sun-pulse 0.45s ease-out;
 }
@@ -186,5 +207,5 @@ html.theme-transition *::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stick.falling, .stick.rising, .stick *, .theme-icon, .sun-pulse { animation: none !important; }
+  .stick.leaving, .stick.arriving, .stick *, .theme-icon, .sun-pulse { animation: none !important; }
 }

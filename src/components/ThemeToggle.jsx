@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
 const STORAGE_KEY = 'xarajatlar:theme'
-const FALL_MS = 1800
-const RISE_MS = 2000
+const LEAVE_MS = 2300 // tun: bola shoxga osilib, chiqib ketadi
+const ARRIVE_MS = 2300 // kun: bola shox bo'ylab kelib, yerga sakraydi
 
 const prefersReducedMotion = () =>
   typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -26,7 +26,7 @@ function Moon() {
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
-  const [phase, setPhase] = useState('idle') // idle | falling | rising
+  const [phase, setPhase] = useState('idle') // idle | leaving | arriving
   const [pulse, setPulse] = useState(false)
   const timers = useRef([])
 
@@ -52,21 +52,21 @@ export default function ThemeToggle() {
     if (prefersReducedMotion()) return applyTheme(next)
 
     root.classList.add('theme-transition')
-    const total = next === 'dark' ? FALL_MS : RISE_MS
-    setPhase(next === 'dark' ? 'falling' : 'rising')
-    // Bola teshikka tushayotganda tun, teshikdan chiqayotganda kun bo'ladi
-    later(() => applyTheme(next), next === 'dark' ? 1250 : 450)
-    // Quyoshdan chiqqanda / quyoshga kirganda tugma "puflab" qo'yadi
-    const pulseAt = next === 'dark' ? 150 : Math.round(total * 0.84)
-    later(() => setPulse(true), pulseAt)
-    later(() => setPulse(false), pulseAt + 450)
+    const total = next === 'dark' ? LEAVE_MS : ARRIVE_MS
+    setPhase(next === 'dark' ? 'leaving' : 'arriving')
+    // Bola shoxdan chiqib ketayotganda tun, shoxdan tushib kelayotganda kun bo'ladi
+    const switchAt = next === 'dark' ? 1100 : 400
+    later(() => applyTheme(next), switchAt)
+    // Mavzu almashganda tugma "puflab" qo'yadi
+    later(() => setPulse(true), switchAt)
+    later(() => setPulse(false), switchAt + 450)
     later(() => {
       setPhase('idle')
       root.classList.remove('theme-transition')
     }, total + 80)
   }
 
-  const stickClass = phase === 'falling' ? 'falling' : phase === 'rising' ? 'rising' : theme === 'dark' ? 'is-dark' : 'is-light'
+  const stickClass = phase === 'leaving' ? 'leaving' : phase === 'arriving' ? 'arriving' : theme === 'dark' ? 'is-dark' : 'is-light'
   const isDark = theme === 'dark'
 
   return (
@@ -85,29 +85,35 @@ export default function ThemeToggle() {
       </button>
 
       <svg viewBox="0 0 212 76" className="pointer-events-none absolute left-0 top-0 h-[76px] w-[212px]" aria-hidden="true">
-        <defs>
-          <clipPath id="stage-clip">
-            <rect x="0" y="0" width="212" height="63" />
-          </clipPath>
-        </defs>
-
-        {/* teshik */}
-        <ellipse cx="172" cy="62" rx="17" ry="5" className="hole" />
+        {/* daraxt shoxi (tepadan o'ngdan chiqib turadi) */}
+        <path d="M 232 10 C 192 8, 150 8, 106 12" className="branch" />
+        <path d="M 140 9 C 134 14, 130 18, 126 20" className="branch branch-twig" />
+        <g className="leaf">
+          <ellipse cx="112" cy="9" rx="5" ry="2.6" transform="rotate(-25 112 9)" />
+          <ellipse cx="104" cy="14" rx="5" ry="2.6" transform="rotate(20 104 14)" />
+          <ellipse cx="124" cy="20" rx="4.5" ry="2.4" transform="rotate(35 124 20)" />
+          <ellipse cx="119" cy="12" rx="4.5" ry="2.4" transform="rotate(-40 119 12)" />
+          <ellipse cx="150" cy="5" rx="4.5" ry="2.4" transform="rotate(-15 150 5)" />
+        </g>
 
         {/* tayoqcha bola */}
-        <g clipPath="url(#stage-clip)">
-          <g className={`stick ${stickClass}`}>
-            <g className="stick-body">
-              <circle cx="0" cy="-30" r="5" className="stick-fill" />
-              <line x1="0" y1="-25" x2="0" y2="-12" className="stick-line" />
-              <g transform="translate(0 -22)">
-                <line x1="0" y1="0" x2="-1" y2="9" className="stick-line arm arm-a" />
-                <line x1="0" y1="0" x2="1" y2="9" className="stick-line arm arm-b" />
-              </g>
-              <g transform="translate(0 -12)">
-                <line x1="0" y1="0" x2="0" y2="12" className="stick-line leg leg-a" />
-                <line x1="0" y1="0" x2="0" y2="12" className="stick-line leg leg-b" />
-              </g>
+        <g className={`stick ${stickClass}`}>
+          <g className="stick-body">
+            <circle cx="0" cy="-30" r="5" className="stick-fill" />
+            <line x1="0" y1="-25" x2="0" y2="-12" className="stick-line" />
+            {/* qo'llar pastda (tik turganda) */}
+            <g transform="translate(0 -22)" className="arms-down">
+              <line x1="0" y1="0" x2="-4" y2="9" className="stick-line" />
+              <line x1="0" y1="0" x2="4" y2="9" className="stick-line" />
+            </g>
+            {/* qo'llar tepada (shoxni ushlab turganda) */}
+            <g transform="translate(0 -23)" className="arms-up">
+              <line x1="-1" y1="0" x2="-5" y2="-17" className="stick-line" />
+              <line x1="1" y1="0" x2="5" y2="-17" className="stick-line" />
+            </g>
+            <g transform="translate(0 -12)">
+              <line x1="0" y1="0" x2="0" y2="12" className="stick-line leg leg-a" />
+              <line x1="0" y1="0" x2="0" y2="12" className="stick-line leg leg-b" />
             </g>
           </g>
         </g>
