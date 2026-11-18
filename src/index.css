@@ -67,11 +67,15 @@ body {
   --stick: #2f3542;
   --branch: #8a6d4d;
   --leaf: #6fae6a;
+  --hole-fill: #1d2027;
+  --hole-rim: #4a5160;
 }
 :root[data-theme='dark'] {
   --stick: #e9eef6;
-  --branch: #6b5844;
+  --branch: #7a6249;
   --leaf: #3e7a52;
+  --hole-fill: #0b0c0f;
+  --hole-rim: #3a404a;
 }
 
 /* kun/tun almashganda ranglar yumshoq o'tadi */
@@ -88,15 +92,17 @@ html.theme-transition *::after {
     fill 0.7s ease !important;
 }
 
-/* ---------- Tema tugmasi: bola va daraxt shoxi ---------- */
-.branch {
+/* ---------- Tema tugmasi: bola, qora doira va shoxcha ---------- */
+.hole {
+  fill: var(--hole-fill);
+  stroke: var(--hole-rim);
+  stroke-width: 1.2;
+}
+.twig {
   fill: none;
   stroke: var(--branch);
-  stroke-width: 4;
+  stroke-width: 2.4;
   stroke-linecap: round;
-}
-.branch-twig {
-  stroke-width: 2.2;
 }
 .leaf ellipse {
   fill: var(--leaf);
@@ -113,35 +119,52 @@ html.theme-transition *::after {
 .arms-up { opacity: 0; }
 .arms-down { opacity: 1; }
 
-/* Dam olish holati: kunduz — bola yerda turadi, tun — shoxdan chiqib ketgan */
+/* Dam olish holati: kunduz — bola quyosh ichida (ko'rinmaydi), tun — doiraga chiqib ketgan */
 .stick.is-light {
-  transform: translate(150px, 62px);
+  transform: translate(42px, 62px);
+  opacity: 0;
 }
 .stick.is-dark {
-  transform: translate(222px, 48px);
+  transform: translate(150px, -4px);
   opacity: 0;
 }
 
-/* Tunga o'tish: yerdan shoxga sakraydi -> shox bo'ylab osilib o'ngga ketadi */
+/* Tunga o'tish: quyoshdan chiqadi -> doira tagiga yuradi -> shoxchaga ilinib doiraga chiqib ketadi */
 .stick.leaving {
-  animation: stick-leave 2.3s linear forwards;
+  animation: stick-leave 2.7s linear forwards;
 }
-.stick.leaving .arms-down { animation: arms-down-leave 2.3s linear forwards; }
-.stick.leaving .arms-up   { animation: arms-up-leave 2.3s linear forwards; }
-.stick.leaving .stick-body { animation: bob 0.375s ease-in-out 0.5s 4; }
-.stick.leaving .leg-a { animation: dangle 0.375s ease-in-out 0.5s 4; }
-.stick.leaving .leg-b { animation: dangle 0.375s ease-in-out 0.5s 4 reverse; }
+.stick.leaving .arms-down { animation: arms-down-leave 2.7s linear forwards; }
+.stick.leaving .arms-up   { animation: arms-up-leave 2.7s linear forwards; }
+.stick.leaving .leg-a { animation: swing 0.45s ease-in-out 0s 3, dangle 0.25s ease-in-out 1.45s 4; }
+.stick.leaving .leg-b { animation: swing 0.45s ease-in-out 0s 3 reverse, dangle 0.25s ease-in-out 1.45s 4 reverse; }
+.stick.leaving .arm-a { animation: swing-arm 0.45s ease-in-out 0s 3 reverse; }
+.stick.leaving .arm-b { animation: swing-arm 0.45s ease-in-out 0s 3; }
+.stick.leaving .stick-body { animation: bob 0.25s ease-in-out 1.45s 4; }
 
-/* Kunga o'tish: o'ngdan shoxga osilib keladi -> qo'yib yuboradi -> yerga tushadi */
+/* Kunga o'tish: doiradan shoxcha orqali tushadi -> quyosh oldiga yuradi -> yo'q bo'ladi */
 .stick.arriving {
-  animation: stick-arrive 2.3s linear forwards;
+  animation: stick-arrive 2.7s linear forwards;
 }
-.stick.arriving .arms-down { animation: arms-down-arrive 2.3s linear forwards; }
-.stick.arriving .arms-up   { animation: arms-up-arrive 2.3s linear forwards; }
-.stick.arriving .stick-body { animation: bob 0.375s ease-in-out 4; }
-.stick.arriving .leg-a { animation: dangle 0.375s ease-in-out 4; }
-.stick.arriving .leg-b { animation: dangle 0.375s ease-in-out 4 reverse; }
+.stick.arriving .arms-down { animation: arms-down-arrive 2.7s linear forwards; }
+.stick.arriving .arms-up   { animation: arms-up-arrive 2.7s linear forwards; }
+.stick.arriving .leg-a { animation: dangle 0.25s ease-in-out 0.17s 4, swing 0.45s ease-in-out 1.2s 2; }
+.stick.arriving .leg-b { animation: dangle 0.25s ease-in-out 0.17s 4 reverse, swing 0.45s ease-in-out 1.2s 2 reverse; }
+.stick.arriving .arm-a { animation: swing-arm 0.45s ease-in-out 1.2s 2 reverse; }
+.stick.arriving .arm-b { animation: swing-arm 0.45s ease-in-out 1.2s 2; }
+.stick.arriving .stick-body { animation: bob 0.25s ease-in-out 0.17s 4; }
 
+@keyframes swing {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(26deg); }
+  75%  { transform: rotate(-26deg); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes swing-arm {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(18deg); }
+  75%  { transform: rotate(-18deg); }
+  100% { transform: rotate(0deg); }
+}
 @keyframes dangle {
   0%   { transform: rotate(0deg); }
   25%  { transform: rotate(9deg); }
@@ -150,41 +173,42 @@ html.theme-transition *::after {
 }
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(1.4px); }
+  50%      { transform: translateY(1.2px); }
 }
 
 @keyframes stick-leave {
-  0%   { transform: translate(150px, 62px); animation-timing-function: linear; }
-  8%   { transform: translate(150px, 62px); animation-timing-function: ease-out; }
-  22%  { transform: translate(150px, 48px); animation-timing-function: linear; }
-  88%  { transform: translate(222px, 48px); }
-  100% { transform: translate(222px, 48px); }
+  0%   { transform: translate(42px, 62px); opacity: 0; animation-timing-function: linear; }
+  8%   { transform: translate(58px, 62px); opacity: 1; animation-timing-function: linear; }
+  50%  { transform: translate(150px, 62px); opacity: 1; animation-timing-function: linear; }
+  56%  { transform: translate(150px, 62px); opacity: 1; animation-timing-function: ease-in-out; }
+  92%  { transform: translate(150px, -4px); opacity: 1; }
+  100% { transform: translate(150px, -4px); opacity: 1; }
 }
 @keyframes arms-up-leave {
-  0%, 8% { opacity: 0; }
-  9%, 100% { opacity: 1; }
+  0%, 51% { opacity: 0; }
+  52%, 100% { opacity: 1; }
 }
 @keyframes arms-down-leave {
-  0%, 8% { opacity: 1; }
-  9%, 100% { opacity: 0; }
+  0%, 51% { opacity: 1; }
+  52%, 100% { opacity: 0; }
 }
 
 @keyframes stick-arrive {
-  0%   { transform: translate(222px, 48px); animation-timing-function: linear; }
-  62%  { transform: translate(150px, 48px); animation-timing-function: linear; }
-  66%  { transform: translate(150px, 48px); animation-timing-function: ease-in; }
-  74%  { transform: translate(150px, 62px); animation-timing-function: ease-out; }
-  79%  { transform: translate(150px, 59px); animation-timing-function: ease-in; }
-  84%  { transform: translate(150px, 62px); }
-  100% { transform: translate(150px, 62px); }
+  0%   { transform: translate(150px, -4px); opacity: 1; animation-timing-function: linear; }
+  6%   { transform: translate(150px, -4px); opacity: 1; animation-timing-function: ease-in-out; }
+  40%  { transform: translate(150px, 62px); opacity: 1; animation-timing-function: linear; }
+  44%  { transform: translate(150px, 62px); opacity: 1; animation-timing-function: linear; }
+  76%  { transform: translate(54px, 62px); opacity: 1; animation-timing-function: linear; }
+  88%  { transform: translate(42px, 62px); opacity: 0; }
+  100% { transform: translate(42px, 62px); opacity: 0; }
 }
 @keyframes arms-up-arrive {
-  0%, 65% { opacity: 1; }
-  66%, 100% { opacity: 0; }
+  0%, 41% { opacity: 1; }
+  42%, 100% { opacity: 0; }
 }
 @keyframes arms-down-arrive {
-  0%, 65% { opacity: 0; }
-  66%, 100% { opacity: 1; }
+  0%, 41% { opacity: 0; }
+  42%, 100% { opacity: 1; }
 }
 
 /* kun/tun almashganda tugma "puflab" qo'yadi */
